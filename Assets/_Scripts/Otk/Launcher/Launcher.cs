@@ -10,6 +10,7 @@ public class Launcher : MonoBehaviourPunCallbacks
 {
     public static Launcher Instance;
 
+    [SerializeField] TMP_InputField playerNameInputField;
     [SerializeField] TMP_InputField roomNameInputField;
     [SerializeField] TMP_Text roomName;
     [SerializeField] TMP_Text errorMessage;
@@ -18,6 +19,8 @@ public class Launcher : MonoBehaviourPunCallbacks
     [SerializeField] GameObject roomListItemPrefab;
     [SerializeField] GameObject playerListItemPrefab;
     [SerializeField] GameObject startGameButton;
+    [SerializeField] TMP_Dropdown gameModeDropdown;
+    //private string _gameMode;
 
     private static Dictionary<string, RoomInfo> cachedRoomList = new Dictionary<string, RoomInfo>();
 
@@ -27,6 +30,7 @@ public class Launcher : MonoBehaviourPunCallbacks
 
     void Start() {
         Debug.Log("Connecting to Master");
+        gameModeDropdown.value = 0;
         PhotonNetwork.ConnectUsingSettings();
     }
 
@@ -41,7 +45,7 @@ public class Launcher : MonoBehaviourPunCallbacks
     public override void OnJoinedLobby() {
         Debug.Log("Joined Lobby");
         MenuManager.Instance.OpenMenu("title");
-        PhotonNetwork.NickName = "Player " + Random.Range(0, 1000).ToString("0000");
+        //PhotonNetwork.NickName = "Player " + Random.Range(0, 1000).ToString("0000");
     }
 
     // creating a room
@@ -139,5 +143,37 @@ public class Launcher : MonoBehaviourPunCallbacks
     // will call this function if the master client has changed
     public override void OnMasterClientSwitched(Player newMasterClient) {
         startGameButton.SetActive(PhotonNetwork.IsMasterClient);
+    }
+
+    // public void GameMode(int gameMode) {
+    //     if(gameMode == 0) {
+    //         _gameMode = "last man standing";
+    //     }
+
+    //     if(gameMode == 1) {
+    //         _gameMode = "team battle";
+    //     }
+
+    //     if(gameMode == 2) {
+    //        _gameMode = "1v1";
+    //     }
+    // }
+
+
+    ////////////////////////
+    // Tempory Functions  //
+    ////////////////////////
+
+
+    // quit game
+    public void QuitGame() {
+        Application.Quit();
+    }
+
+    public void AssignName() {
+        if (string.IsNullOrEmpty(playerNameInputField.text)) {
+            playerNameInputField.text = "Player " + Random.Range(0, 1000).ToString("0000");
+        }
+        PhotonNetwork.NickName = playerNameInputField.text;
     }
 }
