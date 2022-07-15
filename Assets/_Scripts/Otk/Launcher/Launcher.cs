@@ -29,9 +29,9 @@ public class Launcher : MonoBehaviourPunCallbacks
     }
 
     void Start() {
+        StartCoroutine(loadingEnd());
         Debug.Log("Connecting to Master");
         gameModeDropdown.value = 0;
-        PhotonNetwork.ConnectUsingSettings();
     }
 
     // connect to lobby once the user successfully connected to master server
@@ -46,6 +46,12 @@ public class Launcher : MonoBehaviourPunCallbacks
         Debug.Log("Joined Lobby");
         MenuManager.Instance.OpenMenu("title");
         //PhotonNetwork.NickName = "Player " + Random.Range(0, 1000).ToString("0000");
+    }
+
+    // loading screen
+    IEnumerator loadingEnd() {
+        yield return new WaitForSeconds(5);
+        PhotonNetwork.ConnectUsingSettings();
     }
 
     // creating a room
