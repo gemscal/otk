@@ -59,7 +59,7 @@ public class Launcher : MonoBehaviourPunCallbacks
         if (string.IsNullOrEmpty(roomNameInputField.text)) {
             return;
         }
-        PhotonNetwork.CreateRoom(roomNameInputField.text);
+        PhotonNetwork.CreateRoom(roomNameInputField.text, new RoomOptions() {MaxPlayers = 4});
         MenuManager.Instance.OpenMenu("loading");
     }
 
