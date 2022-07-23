@@ -19,8 +19,6 @@ public class Launcher : MonoBehaviourPunCallbacks
     [SerializeField] GameObject roomListItemPrefab;
     [SerializeField] GameObject playerListItemPrefab;
     [SerializeField] GameObject startGameButton;
-    [SerializeField] TMP_Dropdown gameModeDropdown;
-    //private string _gameMode;
 
     private static Dictionary<string, RoomInfo> cachedRoomList = new Dictionary<string, RoomInfo>();
 
@@ -31,7 +29,6 @@ public class Launcher : MonoBehaviourPunCallbacks
     void Start() {
         StartCoroutine(loadingEnd());
         Debug.Log("Connecting to Master");
-        gameModeDropdown.value = 0;
     }
 
     // connect to lobby once the user successfully connected to master server
