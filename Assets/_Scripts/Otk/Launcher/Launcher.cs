@@ -47,7 +47,7 @@ public class Launcher : MonoBehaviourPunCallbacks
 
     // loading screen
     IEnumerator loadingEnd() {
-        yield return new WaitForSeconds(5);
+        yield return new WaitForSeconds(2);
         PhotonNetwork.ConnectUsingSettings();
     }
 
