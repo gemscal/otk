@@ -229,7 +229,7 @@ public class Launcher : MonoBehaviourPunCallbacks
         }
         
         byte maxPlayer = Convert.ToByte(numberOfPlayers.text);
-        int killGoal = 0;
+        int killGoal = Int32.Parse(numberOfKills.text);
         string roomName = roomNameInputField.text;
         string gameMode = "deathmatch";
         string map = "map1";
@@ -261,5 +261,10 @@ public class Launcher : MonoBehaviourPunCallbacks
         };
 
         PhotonNetwork.CreateRoom(_roomName, roomOptions);
+        MenuManager.Instance.OpenMenu("loading");
+    }
+
+    public override void OnCreatedRoom() {
+        Debug.Log(PhotonNetwork.CurrentRoom.CustomProperties[RoomProperties.Map]);
     }
 }
