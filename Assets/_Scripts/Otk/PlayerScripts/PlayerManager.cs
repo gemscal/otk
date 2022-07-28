@@ -19,7 +19,7 @@ public class PlayerManager : MonoBehaviour
         }
     }
 
-    // will call this function to initialize charcter controller
+    // will call this function to initialize character controller
     void CreateController() {
         PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "PlayerController"), Vector3.zero, Quaternion.identity);
     }

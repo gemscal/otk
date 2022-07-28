@@ -1,17 +1,19 @@
+using System;
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
+using Random = UnityEngine.Random;
 using UnityEngine;
-using Photon.Pun;
 using TMPro;
+using Photon.Pun;
 using Photon.Realtime;
-using System.Linq;
+using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 public class Launcher : MonoBehaviourPunCallbacks
 {
     public static Launcher Instance;
 
     [SerializeField] TMP_InputField playerNameInputField;
-    [SerializeField] TMP_InputField roomNameInputField;
     [SerializeField] TMP_Text roomName;
     [SerializeField] TMP_Text errorMessage;
     [SerializeField] Transform roomListContent;
@@ -19,6 +21,12 @@ public class Launcher : MonoBehaviourPunCallbacks
     [SerializeField] GameObject roomListItemPrefab;
     [SerializeField] GameObject playerListItemPrefab;
     [SerializeField] GameObject startGameButton;
+
+    [Header("Create Room Information")]
+    [SerializeField] TMP_InputField roomNameInputField;
+    [SerializeField] TMP_InputField roomPassInputField;
+    [SerializeField] TMP_Text numberOfPlayers;
+    [SerializeField] TMP_Text numberOfKills;
 
     private static Dictionary<string, RoomInfo> cachedRoomList = new Dictionary<string, RoomInfo>();
 
@@ -52,13 +60,14 @@ public class Launcher : MonoBehaviourPunCallbacks
     }
 
     // creating a room
-    public void CreateRoom() {
-        if (string.IsNullOrEmpty(roomNameInputField.text)) {
-            return;
-        }
-        PhotonNetwork.CreateRoom(roomNameInputField.text, new RoomOptions() {MaxPlayers = 4});
-        MenuManager.Instance.OpenMenu("loading");
-    }
+    // public void CreateRoom() {
+    //     if (string.IsNullOrEmpty(roomNameInputField.text)) {
+    //         return;
+    //     }
+    //     byte _maxPlayer = Convert.ToByte(numberOfPlayers.text);
+    //     PhotonNetwork.CreateRoom(roomNameInputField.text, new RoomOptions() { MaxPlayers = _maxPlayer });
+    //     MenuManager.Instance.OpenMenu("loading");
+    // }
 
     // will call this function if the room is successfully created
     public override void OnJoinedRoom() {
@@ -148,20 +157,6 @@ public class Launcher : MonoBehaviourPunCallbacks
         startGameButton.SetActive(PhotonNetwork.IsMasterClient);
     }
 
-    // public void GameMode(int gameMode) {
-    //     if(gameMode == 0) {
-    //         _gameMode = "last man standing";
-    //     }
-
-    //     if(gameMode == 1) {
-    //         _gameMode = "team battle";
-    //     }
-
-    //     if(gameMode == 2) {
-    //        _gameMode = "1v1";
-    //     }
-    // }
-
 
     ////////////////////////
     // Tempory Functions  //
@@ -177,6 +172,94 @@ public class Launcher : MonoBehaviourPunCallbacks
         if (string.IsNullOrEmpty(playerNameInputField.text)) {
             playerNameInputField.text = "Player " + Random.Range(0, 1000).ToString("0000");
         }
+
         PhotonNetwork.NickName = playerNameInputField.text;
+    }
+
+    public void RoomPassword() {
+        if (string.IsNullOrEmpty(roomPassInputField.text)) {
+            roomPassInputField.text = "R" + Random.Range(1000, 9999).ToString("0000");
+        }
+    }
+
+    public void NumberOfPlayerDec() {
+        int numOfPlayers = Int32.Parse(numberOfPlayers.text);
+        if (numOfPlayers == 2) {
+            return;
+        } else {
+            numOfPlayers -= 1;
+            numberOfPlayers.text = numOfPlayers.ToString();
+        }
+    }
+
+    public void NumberOfPlayerInc() {
+        int numOfPlayers = Int32.Parse(numberOfPlayers.text);
+        if (numOfPlayers == 8) {
+            return;
+        } else {
+            numOfPlayers += 1;
+            numberOfPlayers.text = numOfPlayers.ToString();
+        }
+    }
+
+    public void NumberOfKillsDec() {
+        int numOfkills = Int32.Parse(numberOfKills.text);
+        if (numOfkills == 5) {
+            return;
+        } else {
+            numOfkills -= 5;
+            numberOfKills.text = numOfkills.ToString();
+        }
+    }
+
+    public void NumberOfKillsInc() {
+        int numOfkills = Int32.Parse(numberOfKills.text);
+        if (numOfkills == 20) {
+            return;
+        } else {
+            numOfkills += 5;
+            numberOfKills.text = numOfkills.ToString();
+        }
+    }
+
+    // prep function for creating room
+    public void PrepCreateRoom() {
+        if (string.IsNullOrEmpty(roomNameInputField.text)) {
+            return;
+        }
+        
+        byte maxPlayer = Convert.ToByte(numberOfPlayers.text);
+        int killGoal = 0;
+        string roomName = roomNameInputField.text;
+        string gameMode = "deathmatch";
+        string map = "map1";
+        string roomPassword = roomPassInputField.text;
+
+
+        CreateRoom(maxPlayer, killGoal, roomName, gameMode, map, roomPassword);
+    }
+    
+    /// <summary>
+    /// Room creation function
+    /// </summary>
+    public void CreateRoom (byte _maxPlayer, int _killGoal, string _roomName, string _gameMode, string _map, string _roomPassword) {
+        
+        RoomOptions roomOptions = new RoomOptions();
+        roomOptions.MaxPlayers = _maxPlayer;
+        
+        roomOptions.CustomRoomProperties = new Hashtable();
+        roomOptions.CustomRoomProperties.Add(RoomProperties.Map, _map);
+        roomOptions.CustomRoomProperties.Add(RoomProperties.GameMode, _gameMode);
+        roomOptions.CustomRoomProperties.Add(RoomProperties.KillGoal, _killGoal);
+        roomOptions.CustomRoomProperties.Add(RoomProperties.RoomPassword, _roomPassword);
+
+        // custom room properties that will be available to the lobby
+        roomOptions.CustomRoomPropertiesForLobby = new String[] {
+            RoomProperties.Map,
+            RoomProperties.GameMode,
+            RoomProperties.RoomPassword
+        };
+
+        PhotonNetwork.CreateRoom(_roomName, roomOptions);
     }
 }
