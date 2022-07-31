@@ -28,6 +28,7 @@ public class Launcher : MonoBehaviourPunCallbacks
     [SerializeField] TMP_Text numberOfPlayers;
     [SerializeField] TMP_Text numberOfKills;
 
+    public List<string> deathMatchRoom = new List<string>();
     private static Dictionary<string, RoomInfo> cachedRoomList = new Dictionary<string, RoomInfo>();
 
     void Awake() {
@@ -55,7 +56,7 @@ public class Launcher : MonoBehaviourPunCallbacks
 
     // loading screen
     IEnumerator loadingEnd() {
-        yield return new WaitForSeconds(2);
+        yield return new WaitForSeconds(1);
         PhotonNetwork.ConnectUsingSettings();
     }
 
@@ -150,6 +151,12 @@ public class Launcher : MonoBehaviourPunCallbacks
     // start game function
     public void StartGame() {
         PhotonNetwork.LoadLevel(1);
+        string roomName = PhotonNetwork.CurrentRoom.Name;
+        for (int i = 0; i < deathMatchRoom.Count; i++) {
+            if (roomName == deathMatchRoom[i]) {
+                deathMatchRoom.RemoveAt(i);
+            }
+        }
     }
 
     // will call this function if the master client has changed
@@ -233,16 +240,17 @@ public class Launcher : MonoBehaviourPunCallbacks
         string roomName = roomNameInputField.text;
         string gameMode = "deathmatch";
         string map = "map1";
-        string roomPassword = roomPassInputField.text;
-
-
-        CreateRoom(maxPlayer, killGoal, roomName, gameMode, map, roomPassword);
+        
+        CreateRoom(maxPlayer, killGoal, roomName, gameMode, map);
     }
     
     /// <summary>
     /// Room creation function
     /// </summary>
-    public void CreateRoom (byte _maxPlayer, int _killGoal, string _roomName, string _gameMode, string _map, string _roomPassword) {
+    /// <remarks>
+    /// Note: Think new ways to implement private room because photon dont handle private rooms
+    /// </remarks>
+    public void CreateRoom (byte _maxPlayer, int _killGoal, string _roomName, string _gameMode, string _map) {
         
         RoomOptions roomOptions = new RoomOptions();
         roomOptions.MaxPlayers = _maxPlayer;
@@ -251,20 +259,14 @@ public class Launcher : MonoBehaviourPunCallbacks
         roomOptions.CustomRoomProperties.Add(RoomProperties.Map, _map);
         roomOptions.CustomRoomProperties.Add(RoomProperties.GameMode, _gameMode);
         roomOptions.CustomRoomProperties.Add(RoomProperties.KillGoal, _killGoal);
-        roomOptions.CustomRoomProperties.Add(RoomProperties.RoomPassword, _roomPassword);
-
-        // custom room properties that will be available to the lobby
-        roomOptions.CustomRoomPropertiesForLobby = new String[] {
-            RoomProperties.Map,
-            RoomProperties.GameMode,
-            RoomProperties.RoomPassword
-        };
+        //roomOptions.CustomRoomProperties.Add(RoomProperties.RoomPassword, _roomPassword);
 
         PhotonNetwork.CreateRoom(_roomName, roomOptions);
         MenuManager.Instance.OpenMenu("loading");
     }
 
     public override void OnCreatedRoom() {
-        Debug.Log(PhotonNetwork.CurrentRoom.CustomProperties[RoomProperties.Map]);
+        string roomName = PhotonNetwork.CurrentRoom.Name;
+        deathMatchRoom.Add(roomName);
     }
 }
