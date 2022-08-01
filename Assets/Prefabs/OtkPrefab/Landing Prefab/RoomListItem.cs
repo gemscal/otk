@@ -15,9 +15,22 @@ public class RoomListItem : MonoBehaviour
     
     public void SetUp(RoomInfo _info) {
         roomInfo = _info;
-        roomName.text = _info.Name;
 
-        Debug.Log(Launcher.Instance.deathMatchRoom.Count);
+        // check if the room is private & add or remove private icon
+        string checkForPassword = roomInfo.Name.Remove(17);
+        bool isPublic = checkForPassword.Contains("NOPASS");
+        if (isPublic) {
+            privateRoom.SetActive(false);
+        }
+        
+        // TODO: Game mode section
+
+        // TODO: Map section
+
+        // removing the custom room propertiest on the name
+        string roomNameDisplay = roomInfo.Name;
+        roomNameDisplay = roomNameDisplay.Remove(0, 17);
+        roomName.text = roomNameDisplay;
     }
 
     public void OnCLick() {

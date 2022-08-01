@@ -1536,6 +1536,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1522494573}
+        m_TargetAssemblyTypeName: Launcher, Assembly-CSharp
+        m_MethodName: RoomPasswordOff
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_IsOn: 1
 --- !u!1 &235871859
 GameObject:
@@ -6826,7 +6838,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1252642305
 RectTransform:
   m_ObjectHideFlags: 0
@@ -7485,7 +7497,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1360612673
 RectTransform:
   m_ObjectHideFlags: 0
@@ -10846,7 +10858,7 @@ MonoBehaviour:
         m_CallState: 2
       - m_Target: {fileID: 1522494573}
         m_TargetAssemblyTypeName: Launcher, Assembly-CSharp
-        m_MethodName: RoomPassword
+        m_MethodName: RoomPasswordOn
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

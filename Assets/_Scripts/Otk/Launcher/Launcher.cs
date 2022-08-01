@@ -28,7 +28,7 @@ public class Launcher : MonoBehaviourPunCallbacks
     [SerializeField] TMP_Text numberOfPlayers;
     [SerializeField] TMP_Text numberOfKills;
 
-    public List<string> deathMatchRoom = new List<string>();
+    // public List<string> deathMatchRoom = new List<string>();
     private static Dictionary<string, RoomInfo> cachedRoomList = new Dictionary<string, RoomInfo>();
 
     void Awake() {
@@ -59,16 +59,6 @@ public class Launcher : MonoBehaviourPunCallbacks
         yield return new WaitForSeconds(1);
         PhotonNetwork.ConnectUsingSettings();
     }
-
-    // creating a room
-    // public void CreateRoom() {
-    //     if (string.IsNullOrEmpty(roomNameInputField.text)) {
-    //         return;
-    //     }
-    //     byte _maxPlayer = Convert.ToByte(numberOfPlayers.text);
-    //     PhotonNetwork.CreateRoom(roomNameInputField.text, new RoomOptions() { MaxPlayers = _maxPlayer });
-    //     MenuManager.Instance.OpenMenu("loading");
-    // }
 
     // will call this function if the room is successfully created
     public override void OnJoinedRoom() {
@@ -151,12 +141,6 @@ public class Launcher : MonoBehaviourPunCallbacks
     // start game function
     public void StartGame() {
         PhotonNetwork.LoadLevel(1);
-        string roomName = PhotonNetwork.CurrentRoom.Name;
-        for (int i = 0; i < deathMatchRoom.Count; i++) {
-            if (roomName == deathMatchRoom[i]) {
-                deathMatchRoom.RemoveAt(i);
-            }
-        }
     }
 
     // will call this function if the master client has changed
@@ -183,10 +167,14 @@ public class Launcher : MonoBehaviourPunCallbacks
         PhotonNetwork.NickName = playerNameInputField.text;
     }
 
-    public void RoomPassword() {
+    public void RoomPasswordOn() {
         if (string.IsNullOrEmpty(roomPassInputField.text)) {
-            roomPassInputField.text = "R" + Random.Range(1000, 9999).ToString("0000");
+            roomPassInputField.text = "R" + Random.Range(10000, 99999).ToString("00000");
         }
+    }
+
+    public void RoomPasswordOff() {
+        roomPassInputField.text = null;
     }
 
     public void NumberOfPlayerDec() {
@@ -238,19 +226,24 @@ public class Launcher : MonoBehaviourPunCallbacks
         byte maxPlayer = Convert.ToByte(numberOfPlayers.text);
         int killGoal = Int32.Parse(numberOfKills.text);
         string roomName = roomNameInputField.text;
-        string gameMode = "deathmatch";
+        string gameMode = "DM";
         string map = "map1";
-        
-        CreateRoom(maxPlayer, killGoal, roomName, gameMode, map);
+        string roomPass;
+
+        if (string.IsNullOrEmpty(roomPassInputField.text)) {
+            roomPass = "NOPASS";
+        } else {
+            roomPass = roomPassInputField.text;
+        }
+
+        roomName = $"{gameMode} {map} {roomPass} {maxPlayer} {roomName}";
+        CreateRoom(maxPlayer, killGoal, roomName, gameMode, map, roomPass);
     }
     
     /// <summary>
     /// Room creation function
     /// </summary>
-    /// <remarks>
-    /// Note: Think new ways to implement private room because photon dont handle private rooms
-    /// </remarks>
-    public void CreateRoom (byte _maxPlayer, int _killGoal, string _roomName, string _gameMode, string _map) {
+    public void CreateRoom (byte _maxPlayer, int _killGoal, string _roomName, string _gameMode, string _map, string _roomPass) {
         
         RoomOptions roomOptions = new RoomOptions();
         roomOptions.MaxPlayers = _maxPlayer;
@@ -259,7 +252,7 @@ public class Launcher : MonoBehaviourPunCallbacks
         roomOptions.CustomRoomProperties.Add(RoomProperties.Map, _map);
         roomOptions.CustomRoomProperties.Add(RoomProperties.GameMode, _gameMode);
         roomOptions.CustomRoomProperties.Add(RoomProperties.KillGoal, _killGoal);
-        //roomOptions.CustomRoomProperties.Add(RoomProperties.RoomPassword, _roomPassword);
+        roomOptions.CustomRoomProperties.Add(RoomProperties.RoomPassword, _roomPass);
 
         PhotonNetwork.CreateRoom(_roomName, roomOptions);
         MenuManager.Instance.OpenMenu("loading");
@@ -267,6 +260,6 @@ public class Launcher : MonoBehaviourPunCallbacks
 
     public override void OnCreatedRoom() {
         string roomName = PhotonNetwork.CurrentRoom.Name;
-        deathMatchRoom.Add(roomName);
+        // deathMatchRoom.Add(roomName);
     }
 }
