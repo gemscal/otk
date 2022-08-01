@@ -63,7 +63,12 @@ public class Launcher : MonoBehaviourPunCallbacks
     // will call this function if the room is successfully created
     public override void OnJoinedRoom() {
         Debug.Log("Connected to room");
-        roomName.text = PhotonNetwork.CurrentRoom.Name;
+
+        // room details setup
+        string displayName = PhotonNetwork.CurrentRoom.Name;
+        displayName = displayName.Remove(0, 17);
+        roomName.text = displayName;
+        
         MenuManager.Instance.OpenMenu("room");
 
         Player[] players = PhotonNetwork.PlayerList;
