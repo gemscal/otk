@@ -33,6 +33,7 @@ public class Launcher : MonoBehaviourPunCallbacks
     [SerializeField] TMP_Text roomGameMode;
     [SerializeField] TMP_Text roomKillGoal;
     [SerializeField] TMP_Text roomNumberOfPlayer;
+    [SerializeField] TMP_Text roomPassword;
 
     // public List<string> deathMatchRoom = new List<string>();
     private static Dictionary<string, RoomInfo> cachedRoomList = new Dictionary<string, RoomInfo>();
@@ -57,34 +58,12 @@ public class Launcher : MonoBehaviourPunCallbacks
     public override void OnJoinedLobby() {
         Debug.Log("Joined Lobby");
         MenuManager.Instance.OpenMenu("title");
-        //PhotonNetwork.NickName = "Player " + Random.Range(0, 1000).ToString("0000");
     }
 
     // loading screen
     IEnumerator loadingEnd() {
         yield return new WaitForSeconds(1);
         PhotonNetwork.ConnectUsingSettings();
-    }
-
-    // will call this function if the room is successfully created
-    public override void OnJoinedRoom() {
-        Debug.Log("Connected to room");
-
-        // room details setup
-        SetRoomInfo();
-        MenuManager.Instance.OpenMenu("room");
-
-        Player[] players = PhotonNetwork.PlayerList;
-
-        foreach (Transform child in playerListContent) {
-            Destroy(child.gameObject);
-        }
-
-        for (int i = 0; i < players.Count(); i++) {
-            Instantiate(playerListItemPrefab, playerListContent).GetComponent<PlayerListItem>().SetUp(players[i]);
-        }
-
-        startGameButton.SetActive(PhotonNetwork.IsMasterClient);
     }
 
     // will call this function if a room is not successfully created
@@ -266,8 +245,8 @@ public class Launcher : MonoBehaviourPunCallbacks
         MenuManager.Instance.OpenMenu("loading");
     }
 
+    // get room info from photon server and assign to client
     public void SetRoomInfo() {
-        // get room all info from photon server
         string _roomName = PhotonNetwork.CurrentRoom.Name;
         roomName.text = _roomName.Remove(0, 17);
 
@@ -279,7 +258,32 @@ public class Launcher : MonoBehaviourPunCallbacks
 
         roomMap.text = (string)PhotonNetwork.CurrentRoom.CustomProperties[RoomProperties.Map];
         roomGameMode.text = (string)PhotonNetwork.CurrentRoom.CustomProperties[RoomProperties.GameMode];
+        roomPassword.text = (string)PhotonNetwork.CurrentRoom.CustomProperties[RoomProperties.RoomPassword];
+    }
 
-        string _roomPassword = (string)PhotonNetwork.CurrentRoom.CustomProperties[RoomProperties.RoomPassword];
+    // will call this function if the room is successfully created
+    public override void OnJoinedRoom() {
+        Debug.Log("Connected to room");
+
+        // room details setup
+        SetRoomInfo();
+        MenuManager.Instance.OpenMenu("room");
+
+        Player[] players = PhotonNetwork.PlayerList;
+
+        foreach (Transform child in playerListContent) {
+            Destroy(child.gameObject);
+        }
+
+        for (int i = 0; i < players.Count(); i++) {
+            Instantiate(playerListItemPrefab, playerListContent).GetComponent<PlayerListItem>().SetUp(players[i]);
+        }
+
+        startGameButton.SetActive(PhotonNetwork.IsMasterClient);
+    }
+
+    public override void OnJoinRoomFailed(short returnCode, string message) {
+        errorMessage.text = "Joining Room Failed: " + message;
+        MenuManager.Instance.OpenMenu("failed");
     }
 }
