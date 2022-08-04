@@ -14,12 +14,10 @@ public class Launcher : MonoBehaviourPunCallbacks
     public static Launcher Instance;
 
     [SerializeField] TMP_InputField playerNameInputField;
-    [SerializeField] TMP_Text roomName;
     [SerializeField] TMP_Text errorMessage;
     [SerializeField] Transform roomListContent;
     [SerializeField] Transform playerListContent;
     [SerializeField] GameObject roomListItemPrefab;
-    [SerializeField] GameObject playerListItemPrefab;
     [SerializeField] GameObject startGameButton;
 
     [Header("Create Room Information")]
@@ -27,6 +25,14 @@ public class Launcher : MonoBehaviourPunCallbacks
     [SerializeField] TMP_InputField roomPassInputField;
     [SerializeField] TMP_Text numberOfPlayers;
     [SerializeField] TMP_Text numberOfKills;
+
+    [Header("Inside Room Information")]
+    [SerializeField] TMP_Text roomName;
+    [SerializeField] GameObject playerListItemPrefab;
+    [SerializeField] TMP_Text roomMap;
+    [SerializeField] TMP_Text roomGameMode;
+    [SerializeField] TMP_Text roomKillGoal;
+    [SerializeField] TMP_Text roomNumberOfPlayer;
 
     // public List<string> deathMatchRoom = new List<string>();
     private static Dictionary<string, RoomInfo> cachedRoomList = new Dictionary<string, RoomInfo>();
@@ -65,10 +71,7 @@ public class Launcher : MonoBehaviourPunCallbacks
         Debug.Log("Connected to room");
 
         // room details setup
-        string displayName = PhotonNetwork.CurrentRoom.Name;
-        displayName = displayName.Remove(0, 17);
-        roomName.text = displayName;
-        
+        SetRoomInfo();
         MenuManager.Instance.OpenMenu("room");
 
         Player[] players = PhotonNetwork.PlayerList;
@@ -263,8 +266,20 @@ public class Launcher : MonoBehaviourPunCallbacks
         MenuManager.Instance.OpenMenu("loading");
     }
 
-    public override void OnCreatedRoom() {
-        string roomName = PhotonNetwork.CurrentRoom.Name;
-        // deathMatchRoom.Add(roomName);
+    public void SetRoomInfo() {
+        // get room all info from photon server
+        string _roomName = PhotonNetwork.CurrentRoom.Name;
+        roomName.text = _roomName.Remove(0, 17);
+
+        int _maxPlayer = (int)PhotonNetwork.CurrentRoom.MaxPlayers;
+        roomNumberOfPlayer.text = _maxPlayer.ToString() + " Players";
+
+        int _killGoal = (int)PhotonNetwork.CurrentRoom.CustomProperties[RoomProperties.KillGoal];
+        roomKillGoal.text = _killGoal.ToString() + " Kills";
+
+        roomMap.text = (string)PhotonNetwork.CurrentRoom.CustomProperties[RoomProperties.Map];
+        roomGameMode.text = (string)PhotonNetwork.CurrentRoom.CustomProperties[RoomProperties.GameMode];
+
+        string _roomPassword = (string)PhotonNetwork.CurrentRoom.CustomProperties[RoomProperties.RoomPassword];
     }
 }
