@@ -18,7 +18,6 @@ public class Launcher : MonoBehaviourPunCallbacks
     [SerializeField] Transform roomListContent;
     [SerializeField] Transform playerListContent;
     [SerializeField] GameObject roomListItemPrefab;
-    [SerializeField] GameObject startGameButton;
 
     [Header("Create Room Information")]
     [SerializeField] TMP_InputField roomNameInputField;
@@ -34,6 +33,8 @@ public class Launcher : MonoBehaviourPunCallbacks
     [SerializeField] TMP_Text roomKillGoal;
     [SerializeField] TMP_Text roomNumberOfPlayer;
     [SerializeField] TMP_Text roomPassword;
+    [SerializeField] GameObject roomReadyButton;
+    [SerializeField] GameObject startGameButton;
 
     // public List<string> deathMatchRoom = new List<string>();
     private static Dictionary<string, RoomInfo> cachedRoomList = new Dictionary<string, RoomInfo>();
@@ -280,6 +281,7 @@ public class Launcher : MonoBehaviourPunCallbacks
         }
 
         startGameButton.SetActive(PhotonNetwork.IsMasterClient);
+        // roomMasterIcon.SetActive(PhotonNetwork.IsMasterClient); // need fix
     }
 
     public override void OnJoinRoomFailed(short returnCode, string message) {
