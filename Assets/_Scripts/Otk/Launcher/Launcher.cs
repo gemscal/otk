@@ -237,6 +237,7 @@ public class Launcher : MonoBehaviourPunCallbacks
         roomOptions.MaxPlayers = _maxPlayer;
         
         roomOptions.CustomRoomProperties = new Hashtable();
+        roomOptions.BroadcastPropsChangeToAll = true;
         roomOptions.CustomRoomProperties.Add(RoomProperties.Map, _map);
         roomOptions.CustomRoomProperties.Add(RoomProperties.GameMode, _gameMode);
         roomOptions.CustomRoomProperties.Add(RoomProperties.KillGoal, _killGoal);

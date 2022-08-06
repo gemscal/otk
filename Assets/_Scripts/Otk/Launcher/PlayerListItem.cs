@@ -2,29 +2,29 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 using Photon.Pun;
 using Photon.Realtime;
-using TMPro;
+using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 public class PlayerListItem : MonoBehaviourPunCallbacks
 {
     [SerializeField] TMP_Text playerName;
-    [SerializeField] GameObject roomMasterIcon;
+    [SerializeField] TMP_Text playerWeapon;
     [SerializeField] Color roomPlayerColor;
     [SerializeField] Image roomPlayerBG;
+    [SerializeField] GameObject roomMasterIcon;
+    [SerializeField] GameObject weaponType;
+    Hashtable playerProperties = new Hashtable();
+    
     Player player;
 
     public void SetUp(Player _player) {
         player = _player;
         playerName.text = player.NickName;
-        // Debug.Log(PhotonNetwork.IsMasterClient);
-        if (_player == PhotonNetwork.LocalPlayer) {
-            Debug.Log("true");
-            ApplyLocalChanges();
-        }
 
-        if (_player == PhotonNetwork.MasterClient) {
-            roomMasterIcon.SetActive(PhotonNetwork.IsMasterClient);
+        if (_player == PhotonNetwork.LocalPlayer) {
+            ApplyLocalChanges();
         }
     }
 
@@ -40,5 +40,31 @@ public class PlayerListItem : MonoBehaviourPunCallbacks
 
     public void ApplyLocalChanges() {
         roomPlayerBG.color = roomPlayerColor;
+        weaponType.SetActive(true);
     }
+    
+    // player properties
+    public void SetCharacterClass(string weaponType) {
+        playerProperties["playerWeapon"] = weaponType;
+        PhotonNetwork.SetPlayerCustomProperties(playerProperties);
+    }
+
+    public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps) {
+        if (player == targetPlayer) {
+            playerWeapon.text = (string)player.CustomProperties["playerWeapon"];
+        }
+    }
+
+
+    // TODO: Let players know who is the master client via icon
+
+    // public void CheckMasterClient(Player _player) {
+    //     if (_player == PhotonNetwork.MasterClient) {
+    //         roomMasterIcon.SetActive(true);
+    //     }
+    // }
+
+    // public override void OnMasterClientSwitched(Player newMasterClient) {
+    //     CheckMasterClient(newMasterClient);
+    // }
 }
