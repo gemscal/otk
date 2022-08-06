@@ -228,9 +228,7 @@ public class Launcher : MonoBehaviourPunCallbacks
         CreateRoom(maxPlayer, killGoal, roomName, gameMode, map, roomPass);
     }
     
-    /// <summary>
-    /// Room creation function
-    /// </summary>
+    /// <summary> Room creation function </summary>
     public void CreateRoom (byte _maxPlayer, int _killGoal, string _roomName, string _gameMode, string _map, string _roomPass) {
         
         RoomOptions roomOptions = new RoomOptions();
@@ -247,7 +245,7 @@ public class Launcher : MonoBehaviourPunCallbacks
         MenuManager.Instance.OpenMenu("loading");
     }
 
-    // get room info from photon server and assign to client
+    /// <summary> Get room info from photon server and assign to client </summary>
     public void SetRoomInfo() {
         string _roomName = PhotonNetwork.CurrentRoom.Name;
         roomName.text = _roomName.Remove(0, 17);
