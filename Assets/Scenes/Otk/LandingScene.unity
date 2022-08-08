@@ -17761,9 +17761,29 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5548574311538657594, guid: bdf6d1e8012ec9343b4db5a8e767ecdb, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5548574311538657599, guid: bdf6d1e8012ec9343b4db5a8e767ecdb, type: 3}
       propertyPath: m_Name
       value: PlayerList
+      objectReference: {fileID: 0}
+    - target: {fileID: 5548574311538657599, guid: bdf6d1e8012ec9343b4db5a8e767ecdb, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5548574311538657629, guid: bdf6d1e8012ec9343b4db5a8e767ecdb, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5548574311538657629, guid: bdf6d1e8012ec9343b4db5a8e767ecdb, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5548574311538657629, guid: bdf6d1e8012ec9343b4db5a8e767ecdb, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 153
       objectReference: {fileID: 0}
     - target: {fileID: 5548574311538657630, guid: bdf6d1e8012ec9343b4db5a8e767ecdb, type: 3}
       propertyPath: m_Pivot.x
@@ -17849,8 +17869,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5548574311538657642, guid: bdf6d1e8012ec9343b4db5a8e767ecdb, type: 3}
+      propertyPath: roomReadyIcon
+      value: 
+      objectReference: {fileID: 6143385791521363731}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bdf6d1e8012ec9343b4db5a8e767ecdb, type: 3}
+--- !u!1 &6143385791521363731 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5548574311538657594, guid: bdf6d1e8012ec9343b4db5a8e767ecdb, type: 3}
+  m_PrefabInstance: {fileID: 1747904785967652393}
+  m_PrefabAsset: {fileID: 0}
 --- !u!224 &6143385791521363831 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 5548574311538657630, guid: bdf6d1e8012ec9343b4db5a8e767ecdb, type: 3}

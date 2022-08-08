@@ -264,14 +264,12 @@ public class Launcher : MonoBehaviourPunCallbacks
         roomReadyCount.text = readyCount.ToString() + " / " + roomNumberOfPlayer.text;
     }
 
-    // will call this function if the room is successfully created
+    // called when player successfully joined the room
     public override void OnJoinedRoom() {
         Debug.Log("Connected to room");
 
-        // room details setup
         SetRoomInfo();
         MenuManager.Instance.OpenMenu("room");
-
         Player[] players = PhotonNetwork.PlayerList;
 
         foreach (Transform child in playerListContent) {
@@ -291,7 +289,7 @@ public class Launcher : MonoBehaviourPunCallbacks
         MenuManager.Instance.OpenMenu("failed");
     }
 
-    // start game function
+    /// <summary> Start game </summary>
     public void StartGame() {
         PhotonNetwork.LoadLevel(1);
     }

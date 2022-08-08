@@ -14,10 +14,12 @@ public class PlayerListItem : MonoBehaviourPunCallbacks
     [SerializeField] Color roomPlayerColor;
     [SerializeField] Image roomPlayerBG;
     [SerializeField] GameObject roomMasterIcon;
+    [SerializeField] GameObject roomReadyIcon;
     [SerializeField] GameObject characterClass;
     Hashtable playerCustomProp = new Hashtable();
     Player player;
 
+    /// <summary> Setup player prefab and other player settings </summary>
     public void SetUp(Player _player) {
         player = _player;
         playerName.text = player.NickName;
@@ -28,20 +30,25 @@ public class PlayerListItem : MonoBehaviourPunCallbacks
         }
     }
 
+    // called when remote player left the room
     public override void OnPlayerLeftRoom(Player otherPlayer) {
         if (player == otherPlayer) {
             Destroy(gameObject);
         }
     }
 
+    // called when local/client player left the room
     public override void OnLeftRoom() {
         Destroy(gameObject);
     }
 
+    // called everytime players custom properties changed
     public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps) {
         if (player == targetPlayer) {
             playerClass.text = (string)player.CustomProperties[PlayerProperties.PlayerClass];
-            Debug.Log(player.CustomProperties[PlayerProperties.PlayerReady]);
+            if ((string)player.CustomProperties[PlayerProperties.PlayerReady] == "True") {
+                roomReadyIcon.SetActive(true);
+            }
         }
     }
 
