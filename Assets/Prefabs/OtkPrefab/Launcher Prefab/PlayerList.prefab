@@ -259,7 +259,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 5548574311538657642}
         m_TargetAssemblyTypeName: PlayerListItem, Assembly-CSharp
-        m_MethodName: SetCharacterClass
+        m_MethodName: SetPlayerClass
         m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -528,7 +528,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 5548574311538657642}
         m_TargetAssemblyTypeName: PlayerListItem, Assembly-CSharp
-        m_MethodName: SetCharacterClass
+        m_MethodName: SetPlayerClass
         m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -662,7 +662,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 5548574311538657642}
         m_TargetAssemblyTypeName: PlayerListItem, Assembly-CSharp
-        m_MethodName: SetCharacterClass
+        m_MethodName: SetPlayerClass
         m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1066,7 +1066,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 5548574311538657642}
         m_TargetAssemblyTypeName: PlayerListItem, Assembly-CSharp
-        m_MethodName: SetCharacterClass
+        m_MethodName: SetPlayerClass
         m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1470,7 +1470,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 5548574311538657642}
         m_TargetAssemblyTypeName: PlayerListItem, Assembly-CSharp
-        m_MethodName: SetCharacterClass
+        m_MethodName: SetPlayerClass
         m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1646,7 +1646,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 5548574311538657642}
         m_TargetAssemblyTypeName: PlayerListItem, Assembly-CSharp
-        m_MethodName: SetCharacterClass
+        m_MethodName: SetPlayerClass
         m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

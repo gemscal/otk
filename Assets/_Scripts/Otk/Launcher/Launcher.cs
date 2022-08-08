@@ -38,6 +38,8 @@ public class Launcher : MonoBehaviourPunCallbacks
     [SerializeField] GameObject startGameButton;
     public int readyCount;
     private bool isReady = false;
+    Player player;
+    Hashtable playerCustomP = new Hashtable();
 
     // public List<string> deathMatchRoom = new List<string>();
     private static Dictionary<string, RoomInfo> cachedRoomList = new Dictionary<string, RoomInfo>();
@@ -294,7 +296,11 @@ public class Launcher : MonoBehaviourPunCallbacks
         PhotonNetwork.LoadLevel(1);
     }
 
+    /// <summary> Handles ready function in room </summary>
     public void Ready() {
+        Player[] players = PhotonNetwork.PlayerList;
+        string isReadyVal;
+
         if (isReady) {
             readyCount -= 1;
             isReady = false;
@@ -303,8 +309,14 @@ public class Launcher : MonoBehaviourPunCallbacks
             isReady = true;
         }
 
+        for (int i = 0; i < players.Length; i++) {
+            if (players[i] == PhotonNetwork.LocalPlayer) {
+                isReadyVal = (isReady) ? "True" : "False";
+                playerCustomP[PlayerProperties.PlayerReady] = isReadyVal;
+                players[i].SetCustomProperties(playerCustomP);
+            }
+        }
+        
         roomReadyCount.text = readyCount.ToString() + " / " + roomNumberOfPlayer.text;
-
-        Debug.Log(isReady);
     }
 }

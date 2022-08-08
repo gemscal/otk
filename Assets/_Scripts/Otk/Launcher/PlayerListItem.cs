@@ -15,8 +15,7 @@ public class PlayerListItem : MonoBehaviourPunCallbacks
     [SerializeField] Image roomPlayerBG;
     [SerializeField] GameObject roomMasterIcon;
     [SerializeField] GameObject characterClass;
-    Hashtable playerProperties = new Hashtable();
-    
+    Hashtable playerCustomProp = new Hashtable();
     Player player;
 
     public void SetUp(Player _player) {
@@ -25,6 +24,7 @@ public class PlayerListItem : MonoBehaviourPunCallbacks
 
         if (_player == PhotonNetwork.LocalPlayer) {
             ApplyLocalChanges();
+            PlayerCustomProperties();
         }
     }
 
@@ -38,33 +38,32 @@ public class PlayerListItem : MonoBehaviourPunCallbacks
         Destroy(gameObject);
     }
 
+    public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps) {
+        if (player == targetPlayer) {
+            playerClass.text = (string)player.CustomProperties[PlayerProperties.PlayerClass];
+            Debug.Log(player.CustomProperties[PlayerProperties.PlayerReady]);
+        }
+    }
+
+    /// <summary> Apply local changes </summary>
     public void ApplyLocalChanges() {
         roomPlayerBG.color = roomPlayerColor;
         characterClass.SetActive(true);
     }
 
-    public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps) {
-        if (player == targetPlayer) {
-            playerClass.text = (string)player.CustomProperties[PlayerProperties.PlayerClass];
-        }
+    /// <summary> Set player class </summary>
+    public void SetPlayerClass(string playerClass) {
+        playerCustomProp[PlayerProperties.PlayerClass] = playerClass;
+        player.SetCustomProperties(playerCustomProp);
     }
 
-    // player properties
-    public void SetCharacterClass(string charClass) {
-        playerProperties[PlayerProperties.PlayerClass] = charClass;
-        PhotonNetwork.SetPlayerCustomProperties(playerProperties);
+    /// <summary> Set player custom properties </summary>
+    public void PlayerCustomProperties() {
+        playerCustomProp[PlayerProperties.PlayerClass] = "Warrior";
+        playerCustomProp[PlayerProperties.PlayerReady] = "False";
+        playerCustomProp[PlayerProperties.PlayerTeam] = "FFA";
+        player.SetCustomProperties(playerCustomProp);
     }
-
 
     // TODO: Let players know who is the master client via icon
-
-    // public void CheckMasterClient(Player _player) {
-    //     if (_player == PhotonNetwork.MasterClient) {
-    //         roomMasterIcon.SetActive(true);
-    //     }
-    // }
-
-    // public override void OnMasterClientSwitched(Player newMasterClient) {
-    //     CheckMasterClient(newMasterClient);
-    // }
 }

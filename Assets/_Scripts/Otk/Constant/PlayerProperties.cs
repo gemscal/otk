@@ -9,4 +9,5 @@ public class PlayerProperties : MonoBehaviour
 {
     public const string PlayerClass = "PC";
     public const string PlayerReady = "PR";
+    public const string PlayerTeam = "PT";
 }
