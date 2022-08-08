@@ -10,11 +10,11 @@ using Hashtable = ExitGames.Client.Photon.Hashtable;
 public class PlayerListItem : MonoBehaviourPunCallbacks
 {
     [SerializeField] TMP_Text playerName;
-    [SerializeField] TMP_Text playerWeapon;
+    [SerializeField] TMP_Text playerClass;
     [SerializeField] Color roomPlayerColor;
     [SerializeField] Image roomPlayerBG;
     [SerializeField] GameObject roomMasterIcon;
-    [SerializeField] GameObject weaponType;
+    [SerializeField] GameObject characterClass;
     Hashtable playerProperties = new Hashtable();
     
     Player player;
@@ -40,19 +40,19 @@ public class PlayerListItem : MonoBehaviourPunCallbacks
 
     public void ApplyLocalChanges() {
         roomPlayerBG.color = roomPlayerColor;
-        weaponType.SetActive(true);
-    }
-    
-    // player properties
-    public void SetCharacterClass(string weaponType) {
-        playerProperties["playerWeapon"] = weaponType;
-        PhotonNetwork.SetPlayerCustomProperties(playerProperties);
+        characterClass.SetActive(true);
     }
 
     public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps) {
         if (player == targetPlayer) {
-            playerWeapon.text = (string)player.CustomProperties["playerWeapon"];
+            playerClass.text = (string)player.CustomProperties[PlayerProperties.PlayerClass];
         }
+    }
+
+    // player properties
+    public void SetCharacterClass(string charClass) {
+        playerProperties[PlayerProperties.PlayerClass] = charClass;
+        PhotonNetwork.SetPlayerCustomProperties(playerProperties);
     }
 
 

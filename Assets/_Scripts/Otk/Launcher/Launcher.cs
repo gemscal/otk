@@ -33,8 +33,11 @@ public class Launcher : MonoBehaviourPunCallbacks
     [SerializeField] TMP_Text roomKillGoal;
     [SerializeField] TMP_Text roomNumberOfPlayer;
     [SerializeField] TMP_Text roomPassword;
+    [SerializeField] TMP_Text roomReadyCount;
     [SerializeField] GameObject roomReadyButton;
     [SerializeField] GameObject startGameButton;
+    public int readyCount;
+    private bool isReady = false;
 
     // public List<string> deathMatchRoom = new List<string>();
     private static Dictionary<string, RoomInfo> cachedRoomList = new Dictionary<string, RoomInfo>();
@@ -84,6 +87,7 @@ public class Launcher : MonoBehaviourPunCallbacks
         Debug.Log("Leaving Room");
         PhotonNetwork.LeaveRoom();
         MenuManager.Instance.OpenMenu("loading");
+        readyCount = 1;
     }
 
     // will call this function if user successfully leave the room
@@ -126,14 +130,10 @@ public class Launcher : MonoBehaviourPunCallbacks
         Instantiate(playerListItemPrefab, playerListContent).GetComponent<PlayerListItem>().SetUp(newPlayer);
     }
 
-    // start game function
-    public void StartGame() {
-        PhotonNetwork.LoadLevel(1);
-    }
-
     // will call this function if the master client has changed
     public override void OnMasterClientSwitched(Player newMasterClient) {
         startGameButton.SetActive(PhotonNetwork.IsMasterClient);
+        roomReadyButton.SetActive(!PhotonNetwork.IsMasterClient);
     }
 
 
@@ -259,6 +259,7 @@ public class Launcher : MonoBehaviourPunCallbacks
         roomMap.text = (string)PhotonNetwork.CurrentRoom.CustomProperties[RoomProperties.Map];
         roomGameMode.text = (string)PhotonNetwork.CurrentRoom.CustomProperties[RoomProperties.GameMode];
         roomPassword.text = (string)PhotonNetwork.CurrentRoom.CustomProperties[RoomProperties.RoomPassword];
+        roomReadyCount.text = readyCount.ToString() + " / " + roomNumberOfPlayer.text;
     }
 
     // will call this function if the room is successfully created
@@ -280,11 +281,30 @@ public class Launcher : MonoBehaviourPunCallbacks
         }
 
         startGameButton.SetActive(PhotonNetwork.IsMasterClient);
-        // roomMasterIcon.SetActive(PhotonNetwork.IsMasterClient); // need fix
+        roomReadyButton.SetActive(!PhotonNetwork.IsMasterClient);
     }
 
     public override void OnJoinRoomFailed(short returnCode, string message) {
         errorMessage.text = "Joining Room Failed: " + message;
         MenuManager.Instance.OpenMenu("failed");
+    }
+
+    // start game function
+    public void StartGame() {
+        PhotonNetwork.LoadLevel(1);
+    }
+
+    public void Ready() {
+        if (isReady) {
+            readyCount -= 1;
+            isReady = false;
+        } else {
+            readyCount += 1;
+            isReady = true;
+        }
+
+        roomReadyCount.text = readyCount.ToString() + " / " + roomNumberOfPlayer.text;
+
+        Debug.Log(isReady);
     }
 }

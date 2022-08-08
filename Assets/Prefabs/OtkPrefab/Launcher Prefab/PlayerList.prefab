@@ -1495,7 +1495,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &5548574311538657627
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1955,7 +1955,7 @@ GameObject:
   - component: {fileID: 5548574311538657613}
   - component: {fileID: 5548574311538657637}
   m_Layer: 5
-  m_Name: PlayerWeapon
+  m_Name: PlayerClass
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2175,8 +2175,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerName: {fileID: 5548574311538657635}
-  playerWeapon: {fileID: 5548574311538657637}
-  roomPlayerColor: {r: 0.854902, g: 0.5686275, b: 0.054901965, a: 1}
+  playerClass: {fileID: 5548574311538657637}
+  roomPlayerColor: {r: 0, g: 0.088504255, b: 0.24528301, a: 1}
   roomPlayerBG: {fileID: 5548574311538657639}
   roomMasterIcon: {fileID: 5548574311538657596}
-  weaponType: {fileID: 5548574311538657592}
+  characterClass: {fileID: 5548574311538657592}
