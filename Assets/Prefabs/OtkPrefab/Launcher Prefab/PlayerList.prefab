@@ -2179,4 +2179,5 @@ MonoBehaviour:
   roomPlayerColor: {r: 0, g: 0.088504255, b: 0.24528301, a: 1}
   roomPlayerBG: {fileID: 5548574311538657639}
   roomMasterIcon: {fileID: 5548574311538657596}
+  roomReadyIcon: {fileID: 5548574311538657594}
   characterClass: {fileID: 5548574311538657592}

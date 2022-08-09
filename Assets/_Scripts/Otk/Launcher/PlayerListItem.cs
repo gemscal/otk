@@ -16,7 +16,6 @@ public class PlayerListItem : MonoBehaviourPunCallbacks
     [SerializeField] GameObject roomMasterIcon;
     [SerializeField] GameObject roomReadyIcon;
     [SerializeField] GameObject characterClass;
-    Hashtable playerCustomProp = new Hashtable();
     Player player;
 
     /// <summary> Setup player prefab and other player settings </summary>
@@ -44,11 +43,32 @@ public class PlayerListItem : MonoBehaviourPunCallbacks
 
     // called everytime players custom properties changed
     public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps) {
+        Debug.Log(changedProps.Count);
         if (player == targetPlayer) {
-            playerClass.text = (string)player.CustomProperties[PlayerProperties.PlayerClass];
-            if ((string)player.CustomProperties[PlayerProperties.PlayerReady] == "True") {
-                roomReadyIcon.SetActive(true);
+
+            // default properties
+            if (changedProps.Count == 3) {
+                playerClass.text = (string)player.CustomProperties[PlayerProperties.PlayerClass];
             }
+
+            // specific change of properties
+            if (changedProps.Count == 1) {
+                if (changedProps.ContainsKey(PlayerProperties.PlayerClass)) {
+                    playerClass.text = (string)player.CustomProperties[PlayerProperties.PlayerClass];
+                }
+
+                if (changedProps.ContainsKey(PlayerProperties.PlayerReady)) {
+                    if ((string)player.CustomProperties[PlayerProperties.PlayerReady] == "True") {
+                        roomReadyIcon.SetActive(true);
+                        Launcher.Instance.RemotePlayerReadyCount(true);
+                    } else {
+                        roomReadyIcon.SetActive(false);
+                        Launcher.Instance.RemotePlayerReadyCount(false);
+                    }
+                }
+            }
+
+            Debug.Log(PhotonNetwork.LocalPlayer.CustomProperties);
         }
     }
 
@@ -60,16 +80,18 @@ public class PlayerListItem : MonoBehaviourPunCallbacks
 
     /// <summary> Set player class </summary>
     public void SetPlayerClass(string playerClass) {
-        playerCustomProp[PlayerProperties.PlayerClass] = playerClass;
-        player.SetCustomProperties(playerCustomProp);
+        Hashtable playerClassProp = new Hashtable();
+        playerClassProp[PlayerProperties.PlayerClass] = playerClass;
+        player.SetCustomProperties(playerClassProp);
     }
 
-    /// <summary> Set player custom properties </summary>
+    /// <summary> Set player default custom properties </summary>
     public void PlayerCustomProperties() {
-        playerCustomProp[PlayerProperties.PlayerClass] = "Warrior";
-        playerCustomProp[PlayerProperties.PlayerReady] = "False";
-        playerCustomProp[PlayerProperties.PlayerTeam] = "FFA";
-        player.SetCustomProperties(playerCustomProp);
+        Hashtable defaultCustomProp = new Hashtable();
+        defaultCustomProp[PlayerProperties.PlayerClass] = "Warrior";
+        defaultCustomProp[PlayerProperties.PlayerReady] = "False";
+        defaultCustomProp[PlayerProperties.PlayerTeam] = "FFA";
+        player.SetCustomProperties(defaultCustomProp);
     }
 
     // TODO: Let players know who is the master client via icon

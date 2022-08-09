@@ -39,7 +39,6 @@ public class Launcher : MonoBehaviourPunCallbacks
     public int readyCount;
     private bool isReady = false;
     Player player;
-    Hashtable playerCustomP = new Hashtable();
 
     // public List<string> deathMatchRoom = new List<string>();
     private static Dictionary<string, RoomInfo> cachedRoomList = new Dictionary<string, RoomInfo>();
@@ -296,17 +295,11 @@ public class Launcher : MonoBehaviourPunCallbacks
 
     /// <summary> Handles ready function in room </summary>
     public void Ready() {
-        Player[] players = PhotonNetwork.PlayerList;
         string isReadyVal;
-
-        if (isReady) {
-            readyCount -= 1;
-            isReady = false;
-        } else {
-            readyCount += 1;
-            isReady = true;
-        }
-
+        isReady = (isReady) ? false : true;
+        
+        Player[] players = PhotonNetwork.PlayerList;
+        Hashtable playerCustomP = new Hashtable();
         for (int i = 0; i < players.Length; i++) {
             if (players[i] == PhotonNetwork.LocalPlayer) {
                 isReadyVal = (isReady) ? "True" : "False";
@@ -317,4 +310,17 @@ public class Launcher : MonoBehaviourPunCallbacks
         
         roomReadyCount.text = readyCount.ToString() + " / " + roomNumberOfPlayer.text;
     }
+
+    /// <summary> Handles ready function in room </summary>
+    public void RemotePlayerReadyCount(bool activate) {
+        if (activate == true) {
+            readyCount += 1;
+        } else {
+            readyCount -= 1;
+        }
+
+        roomReadyCount.text = readyCount.ToString() + " / " + roomNumberOfPlayer.text;
+    }
+
+    
 }
