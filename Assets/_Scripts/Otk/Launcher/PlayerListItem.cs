@@ -26,6 +26,7 @@ public class PlayerListItem : MonoBehaviourPunCallbacks
         if (_player == PhotonNetwork.LocalPlayer) {
             ApplyLocalChanges();
             PlayerCustomProperties();
+            UpdateOtherPlayerProperties();
         }
     }
 
@@ -43,20 +44,18 @@ public class PlayerListItem : MonoBehaviourPunCallbacks
 
     // called everytime players custom properties changed
     public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps) {
-        Debug.Log(changedProps.Count);
         if (player == targetPlayer) {
-
             // default properties
             if (changedProps.Count == 3) {
                 playerClass.text = (string)player.CustomProperties[PlayerProperties.PlayerClass];
             }
-
             // specific change of properties
             if (changedProps.Count == 1) {
+                // updating player character class property
                 if (changedProps.ContainsKey(PlayerProperties.PlayerClass)) {
                     playerClass.text = (string)player.CustomProperties[PlayerProperties.PlayerClass];
                 }
-
+                // updating player ready property
                 if (changedProps.ContainsKey(PlayerProperties.PlayerReady)) {
                     if ((string)player.CustomProperties[PlayerProperties.PlayerReady] == "True") {
                         roomReadyIcon.SetActive(true);
@@ -67,8 +66,6 @@ public class PlayerListItem : MonoBehaviourPunCallbacks
                     }
                 }
             }
-
-            Debug.Log(PhotonNetwork.LocalPlayer.CustomProperties);
         }
     }
 
@@ -76,6 +73,16 @@ public class PlayerListItem : MonoBehaviourPunCallbacks
     public void ApplyLocalChanges() {
         roomPlayerBG.color = roomPlayerColor;
         characterClass.SetActive(true);
+    }
+
+    /// <summary> Update newly joined local player about the other 
+    /// players custom properties in the room </summary>
+    public void UpdateOtherPlayerProperties() {
+        Player[] firstPlayers = PhotonNetwork.PlayerList;
+        for (int i = 0; i < firstPlayers.Length; i++) {
+            string test = (string)firstPlayers[i].CustomProperties[PlayerProperties.PlayerReady];
+            Debug.Log($"{firstPlayers[i].NickName} - {test}");
+        }
     }
 
     /// <summary> Set player class </summary>
