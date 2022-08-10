@@ -35,6 +35,16 @@ public class PlayerListItem : MonoBehaviourPunCallbacks
         if (player == otherPlayer) {
             Destroy(gameObject);
         }
+
+        // recalculate the players on ready mode
+        Player[] rp = PhotonNetwork.PlayerList;
+        int rc = 1; // ready count
+        for (int i = 0; i < rp.Length; i++) {
+            if ((string)rp[i].CustomProperties[PlayerProperties.PlayerReady] == "True") {
+                rc = rc + 1;
+            }
+        }
+        Launcher.Instance.RecalculateReady(rc);
     }
 
     // called when local/client player left the room
@@ -48,6 +58,9 @@ public class PlayerListItem : MonoBehaviourPunCallbacks
             // default properties
             if (changedProps.Count == 3) {
                 playerClass.text = (string)player.CustomProperties[PlayerProperties.PlayerClass];
+                if ((string)player.CustomProperties[PlayerProperties.PlayerReady] == "True") {
+                    roomReadyIcon.SetActive(true);
+                }
             }
             // specific change of properties
             if (changedProps.Count == 1) {
@@ -80,8 +93,21 @@ public class PlayerListItem : MonoBehaviourPunCallbacks
     public void UpdateOtherPlayerProperties() {
         Player[] firstPlayers = PhotonNetwork.PlayerList;
         for (int i = 0; i < firstPlayers.Length; i++) {
-            string test = (string)firstPlayers[i].CustomProperties[PlayerProperties.PlayerReady];
-            Debug.Log($"{firstPlayers[i].NickName} - {test}");
+            if (firstPlayers[i] != PhotonNetwork.LocalPlayer) {
+                Hashtable updatePlayersProp = new Hashtable();
+                string isReady = (string)firstPlayers[i].CustomProperties[PlayerProperties.PlayerReady];
+                string charClass = (string)firstPlayers[i].CustomProperties[PlayerProperties.PlayerClass];
+                string charTeam = (string)firstPlayers[i].CustomProperties[PlayerProperties.PlayerTeam];
+                
+                if (isReady == "True") {
+                    Launcher.Instance.RemotePlayerReadyCount(true);
+                }
+
+                updatePlayersProp[PlayerProperties.PlayerReady] = isReady;
+                updatePlayersProp[PlayerProperties.PlayerClass] = charClass;
+                updatePlayersProp[PlayerProperties.PlayerTeam] = charTeam;
+                firstPlayers[i].SetCustomProperties(updatePlayersProp);
+            } 
         }
     }
 

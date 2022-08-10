@@ -86,9 +86,10 @@ public class Launcher : MonoBehaviourPunCallbacks
     // leaving room function
     public void LeaveRoom() {
         Debug.Log("Leaving Room");
+        readyCount = 1;
+        isReady = false;
         PhotonNetwork.LeaveRoom();
         MenuManager.Instance.OpenMenu("loading");
-        readyCount = 1;
     }
 
     // will call this function if user successfully leave the room
@@ -307,20 +308,27 @@ public class Launcher : MonoBehaviourPunCallbacks
                 players[i].SetCustomProperties(playerCustomP);
             }
         }
-        
-        roomReadyCount.text = readyCount.ToString() + " / " + roomNumberOfPlayer.text;
+
+        roomReadyCount.text = $"{readyCount} / {roomNumberOfPlayer.text}";
     }
 
     /// <summary> Handles ready function in room </summary>
-    public void RemotePlayerReadyCount(bool activate) {
-        if (activate == true) {
+    public void RemotePlayerReadyCount(bool setReady) {
+        Debug.Log(readyCount);
+        if (setReady == true) {
             readyCount += 1;
         } else {
             readyCount -= 1;
         }
-
-        roomReadyCount.text = readyCount.ToString() + " / " + roomNumberOfPlayer.text;
+        roomReadyCount.text = $"{readyCount} / {roomNumberOfPlayer.text}";
+        Debug.Log(setReady);
+        Debug.Log(readyCount);
     }
 
-    
+    /// <summary> Handles ready function in room </summary>
+    public void RecalculateReady(int rCount) {
+        readyCount = rCount;
+        roomReadyCount.text = $"{rCount} / {roomNumberOfPlayer.text}";
+        Debug.Log(rCount);
+    }
 }
