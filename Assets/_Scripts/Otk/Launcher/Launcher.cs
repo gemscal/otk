@@ -314,21 +314,13 @@ public class Launcher : MonoBehaviourPunCallbacks
 
     /// <summary> Handles ready function in room </summary>
     public void RemotePlayerReadyCount(bool setReady) {
-        Debug.Log(readyCount);
-        if (setReady == true) {
-            readyCount += 1;
-        } else {
-            readyCount -= 1;
-        }
+        readyCount = (setReady == true) ? readyCount + 1 : readyCount - 1;
         roomReadyCount.text = $"{readyCount} / {roomNumberOfPlayer.text}";
-        Debug.Log(setReady);
-        Debug.Log(readyCount);
     }
 
     /// <summary> Handles ready function in room </summary>
     public void RecalculateReady(int rCount) {
         readyCount = rCount;
         roomReadyCount.text = $"{rCount} / {roomNumberOfPlayer.text}";
-        Debug.Log(rCount);
     }
 }

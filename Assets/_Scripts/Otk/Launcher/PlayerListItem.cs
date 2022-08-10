@@ -30,6 +30,11 @@ public class PlayerListItem : MonoBehaviourPunCallbacks
         }
     }
 
+    // called when local/client player left the room
+    public override void OnLeftRoom() {
+        Destroy(gameObject);
+    }
+
     // called when remote player left the room
     public override void OnPlayerLeftRoom(Player otherPlayer) {
         if (player == otherPlayer) {
@@ -45,11 +50,6 @@ public class PlayerListItem : MonoBehaviourPunCallbacks
             }
         }
         Launcher.Instance.RecalculateReady(rc);
-    }
-
-    // called when local/client player left the room
-    public override void OnLeftRoom() {
-        Destroy(gameObject);
     }
 
     // called everytime players custom properties changed
