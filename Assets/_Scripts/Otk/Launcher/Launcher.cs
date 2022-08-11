@@ -38,7 +38,6 @@ public class Launcher : MonoBehaviourPunCallbacks
     [SerializeField] GameObject startGameButton;
     public int readyCount;
     private bool isReady = false;
-    Player player;
 
     // public List<string> deathMatchRoom = new List<string>();
     private static Dictionary<string, RoomInfo> cachedRoomList = new Dictionary<string, RoomInfo>();
@@ -132,18 +131,6 @@ public class Launcher : MonoBehaviourPunCallbacks
         Instantiate(playerListItemPrefab, playerListContent).GetComponent<PlayerListItem>().SetUp(newPlayer);
     }
 
-    // will call this function if the master client has changed
-    public override void OnMasterClientSwitched(Player newMasterClient) {
-        startGameButton.SetActive(PhotonNetwork.IsMasterClient);
-        roomReadyButton.SetActive(!PhotonNetwork.IsMasterClient);
-    }
-
-
-    ////////////////////////
-    // Tempory Functions  //
-    ////////////////////////
-
-
     // quit game
     public void QuitGame() {
         Application.Quit();
@@ -156,6 +143,11 @@ public class Launcher : MonoBehaviourPunCallbacks
 
         PhotonNetwork.NickName = playerNameInputField.text;
     }
+
+
+    ////////////////////////
+    //   ROOM FUNCTIONS   //
+    ////////////////////////
 
     public void RoomPasswordOn() {
         if (string.IsNullOrEmpty(roomPassInputField.text)) {
@@ -304,23 +296,35 @@ public class Launcher : MonoBehaviourPunCallbacks
         for (int i = 0; i < players.Length; i++) {
             if (players[i] == PhotonNetwork.LocalPlayer) {
                 isReadyVal = (isReady) ? "True" : "False";
-                playerCustomP[PlayerProperties.PlayerReady] = isReadyVal;
+                playerCustomP[PlayerProperties.PR] = isReadyVal;
                 players[i].SetCustomProperties(playerCustomP);
             }
         }
 
-        roomReadyCount.text = $"{readyCount} / {roomNumberOfPlayer.text}";
+        DisplayReadyCount(readyCount);
     }
 
     /// <summary> Handles ready function in room </summary>
     public void RemotePlayerReadyCount(bool setReady) {
         readyCount = (setReady == true) ? readyCount + 1 : readyCount - 1;
-        roomReadyCount.text = $"{readyCount} / {roomNumberOfPlayer.text}";
+        DisplayReadyCount(readyCount);
     }
 
     /// <summary> Handles ready function in room </summary>
     public void RecalculateReady(int rCount) {
         readyCount = rCount;
+        DisplayReadyCount(readyCount);
+    }
+
+    /// <summary> Will display the number of players who is ready </summary>
+    public void DisplayReadyCount(int rCount) {
         roomReadyCount.text = $"{rCount} / {roomNumberOfPlayer.text}";
     }
+
+    // will call this function if the master client has changed
+    public override void OnMasterClientSwitched(Player newMasterClient) {
+        startGameButton.SetActive(PhotonNetwork.IsMasterClient);
+        roomReadyButton.SetActive(!PhotonNetwork.IsMasterClient);
+    }
+
 }

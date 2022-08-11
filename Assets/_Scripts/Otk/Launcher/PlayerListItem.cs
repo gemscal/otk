@@ -37,6 +37,7 @@ public class PlayerListItem : MonoBehaviourPunCallbacks
 
     // called when remote player left the room
     public override void OnPlayerLeftRoom(Player otherPlayer) {
+        Debug.Log("Remote");
         if (player == otherPlayer) {
             Destroy(gameObject);
         }
@@ -45,32 +46,56 @@ public class PlayerListItem : MonoBehaviourPunCallbacks
         Player[] rp = PhotonNetwork.PlayerList;
         int rc = 1; // ready count
         for (int i = 0; i < rp.Length; i++) {
-            if ((string)rp[i].CustomProperties[PlayerProperties.PlayerReady] == "True") {
+            if ((string)rp[i].CustomProperties[PlayerProperties.PR] == "True") {
                 rc = rc + 1;
             }
         }
         Launcher.Instance.RecalculateReady(rc);
     }
 
+    // called after switching to new master client
+    // public override void OnMasterClientSwitched(Player newMasterClient) {
+        // Debug.Log("Switch Master");
+        // Player[] existingP = PhotonNetwork.PlayerList;
+        // for (int i = 0; i < existingP.Length; i++) {
+        //     string pm, pc, pr, pt;
+        //     pm = (string)existingP[i].CustomProperties[PlayerProperties.PM];
+        //     pc = (string)existingP[i].CustomProperties[PlayerProperties.PC];
+        //     pr = (string)existingP[i].CustomProperties[PlayerProperties.PR];
+        //     pt = (string)existingP[i].CustomProperties[PlayerProperties.PT];
+
+        //     // if ((string)existingP[i].CustomProperties[PlayerProperties.PM] == "False") {
+
+        //     // } else {
+
+        //     // }
+        // }
+    // }
+
     // called everytime players custom properties changed
     public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps) {
         if (player == targetPlayer) {
-            // default properties
-            if (changedProps.Count == 3) {
-                playerClass.text = (string)player.CustomProperties[PlayerProperties.PlayerClass];
-                if ((string)player.CustomProperties[PlayerProperties.PlayerReady] == "True") {
+            // default & get first players properties
+            if (changedProps.Count == 4) {
+                playerClass.text = (string)player.CustomProperties[PlayerProperties.PC];
+                // check if the first players is on ready mode
+                if ((string)player.CustomProperties[PlayerProperties.PR] == "True") {
                     roomReadyIcon.SetActive(true);
+                }
+                // check if the player is the master client
+                if ((string)player.CustomProperties[PlayerProperties.PM] == "Yes") {
+                    roomMasterIcon.SetActive(true);
                 }
             }
             // specific change of properties
             if (changedProps.Count == 1) {
                 // updating player character class property
-                if (changedProps.ContainsKey(PlayerProperties.PlayerClass)) {
-                    playerClass.text = (string)player.CustomProperties[PlayerProperties.PlayerClass];
+                if (changedProps.ContainsKey(PlayerProperties.PC)) {
+                    playerClass.text = (string)player.CustomProperties[PlayerProperties.PC];
                 }
                 // updating player ready property
-                if (changedProps.ContainsKey(PlayerProperties.PlayerReady)) {
-                    if ((string)player.CustomProperties[PlayerProperties.PlayerReady] == "True") {
+                if (changedProps.ContainsKey(PlayerProperties.PR)) {
+                    if ((string)player.CustomProperties[PlayerProperties.PR] == "True") {
                         roomReadyIcon.SetActive(true);
                         Launcher.Instance.RemotePlayerReadyCount(true);
                     } else {
@@ -91,22 +116,24 @@ public class PlayerListItem : MonoBehaviourPunCallbacks
     /// <summary> Update newly joined local player about the other 
     /// players custom properties in the room </summary>
     public void UpdateOtherPlayerProperties() {
-        Player[] firstPlayers = PhotonNetwork.PlayerList;
-        for (int i = 0; i < firstPlayers.Length; i++) {
-            if (firstPlayers[i] != PhotonNetwork.LocalPlayer) {
+        Player[] existingP = PhotonNetwork.PlayerList;
+        for (int i = 0; i < existingP.Length; i++) {
+            if (existingP[i] != PhotonNetwork.LocalPlayer) {
                 Hashtable updatePlayersProp = new Hashtable();
-                string isReady = (string)firstPlayers[i].CustomProperties[PlayerProperties.PlayerReady];
-                string charClass = (string)firstPlayers[i].CustomProperties[PlayerProperties.PlayerClass];
-                string charTeam = (string)firstPlayers[i].CustomProperties[PlayerProperties.PlayerTeam];
+                string isReady = (string)existingP[i].CustomProperties[PlayerProperties.PR];
+                string isMaster = (string)existingP[i].CustomProperties[PlayerProperties.PM];
+                string charClass = (string)existingP[i].CustomProperties[PlayerProperties.PC];
+                string charTeam = (string)existingP[i].CustomProperties[PlayerProperties.PT];
                 
                 if (isReady == "True") {
                     Launcher.Instance.RemotePlayerReadyCount(true);
                 }
 
-                updatePlayersProp[PlayerProperties.PlayerReady] = isReady;
-                updatePlayersProp[PlayerProperties.PlayerClass] = charClass;
-                updatePlayersProp[PlayerProperties.PlayerTeam] = charTeam;
-                firstPlayers[i].SetCustomProperties(updatePlayersProp);
+                updatePlayersProp[PlayerProperties.PR] = isReady;
+                updatePlayersProp[PlayerProperties.PC] = charClass;
+                updatePlayersProp[PlayerProperties.PT] = charTeam;
+                updatePlayersProp[PlayerProperties.PM] = isMaster;
+                existingP[i].SetCustomProperties(updatePlayersProp);
             } 
         }
     }
@@ -114,18 +141,25 @@ public class PlayerListItem : MonoBehaviourPunCallbacks
     /// <summary> Set player class </summary>
     public void SetPlayerClass(string playerClass) {
         Hashtable playerClassProp = new Hashtable();
-        playerClassProp[PlayerProperties.PlayerClass] = playerClass;
+        playerClassProp[PlayerProperties.PC] = playerClass;
         player.SetCustomProperties(playerClassProp);
     }
 
     /// <summary> Set player default custom properties </summary>
     public void PlayerCustomProperties() {
-        Hashtable defaultCustomProp = new Hashtable();
-        defaultCustomProp[PlayerProperties.PlayerClass] = "Warrior";
-        defaultCustomProp[PlayerProperties.PlayerReady] = "False";
-        defaultCustomProp[PlayerProperties.PlayerTeam] = "FFA";
-        player.SetCustomProperties(defaultCustomProp);
+        Hashtable defaultProp = new Hashtable();
+        defaultProp[PlayerProperties.PC] = "Warrior";
+        defaultProp[PlayerProperties.PR] = "False";
+        defaultProp[PlayerProperties.PT] = "FFA";
+        if (player == PhotonNetwork.MasterClient) {
+            defaultProp[PlayerProperties.PM] = "Yes";
+        } else {
+            defaultProp[PlayerProperties.PM] = "No";
+        }
+        player.SetCustomProperties(defaultProp);
     }
 
-    // TODO: Let players know who is the master client via icon
+    public override void OnMasterClientSwitched(Player newMasterClient) {
+        
+    }
 }
