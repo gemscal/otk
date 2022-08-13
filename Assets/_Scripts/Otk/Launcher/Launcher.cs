@@ -2,11 +2,11 @@ using System;
 using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
-using Random = UnityEngine.Random;
 using UnityEngine;
 using TMPro;
 using Photon.Pun;
 using Photon.Realtime;
+using Random = UnityEngine.Random;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 public class Launcher : MonoBehaviourPunCallbacks
@@ -310,14 +310,10 @@ public class Launcher : MonoBehaviourPunCallbacks
         DisplayReadyCount(readyCount);
     }
 
-    /// <summary> Handles ready function in room </summary>
-    public void RecalculateReady(int rCount) {
-        readyCount = rCount;
-        DisplayReadyCount(readyCount);
-    }
-
     /// <summary> Will display the number of players who is ready </summary>
     public void DisplayReadyCount(int rCount) {
+        readyCount = rCount;
+        Debug.Log("Display" + readyCount);
         roomReadyCount.text = $"{rCount} / {roomNumberOfPlayer.text}";
     }
 
@@ -325,6 +321,21 @@ public class Launcher : MonoBehaviourPunCallbacks
     public override void OnMasterClientSwitched(Player newMasterClient) {
         startGameButton.SetActive(PhotonNetwork.IsMasterClient);
         roomReadyButton.SetActive(!PhotonNetwork.IsMasterClient);
-    }
 
+        Player[] existingP = PhotonNetwork.PlayerList;
+        int rc = 1; // ready count
+        for (int i = 0; i < existingP.Length; i++) {
+            if (existingP[i] == newMasterClient) {
+                Hashtable updateProp = new Hashtable();
+                updateProp[PlayerProperties.PR] = "False";
+                updateProp[PlayerProperties.PM] = "Yes";
+                existingP[i].SetCustomProperties(updateProp);
+            } else {
+                string pr = (string)existingP[i].CustomProperties[PlayerProperties.PR];
+                if (pr == "True") { rc += 1; }
+            }
+        }
+        
+        DisplayReadyCount(rc);
+    }
 }

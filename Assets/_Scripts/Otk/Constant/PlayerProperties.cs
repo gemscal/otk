@@ -5,17 +5,17 @@ using UnityEngine;
 /// <summary>
 /// This class will hold the custom player properties.
 /// </summary>
-public class PlayerProperties : MonoBehaviour
+public class PlayerProperties
 {   
     /// <summary> Player class property </summary>
     public const string PC = "PC";
 
-    /// <summary> Player ready property. </summary>
+    /// <summary> Player isReady property. </summary>
     public const string PR = "PR";
+
+    /// <summary> Player isMaster property. </summary>
+    public const string PM = "MC";
 
     /// <summary> Player team property. </summary>
     public const string PT = "PT";
-
-    /// <summary> Player Master property. </summary>
-    public const string PM = "MC";
 }

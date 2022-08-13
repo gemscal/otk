@@ -37,7 +37,6 @@ public class PlayerListItem : MonoBehaviourPunCallbacks
 
     // called when remote player left the room
     public override void OnPlayerLeftRoom(Player otherPlayer) {
-        Debug.Log("Remote");
         if (player == otherPlayer) {
             Destroy(gameObject);
         }
@@ -46,31 +45,13 @@ public class PlayerListItem : MonoBehaviourPunCallbacks
         Player[] rp = PhotonNetwork.PlayerList;
         int rc = 1; // ready count
         for (int i = 0; i < rp.Length; i++) {
-            if ((string)rp[i].CustomProperties[PlayerProperties.PR] == "True") {
+            if ((string)rp[i].CustomProperties[PlayerProperties.PR] == "True" && rp[i] != PhotonNetwork.MasterClient) {
                 rc = rc + 1;
             }
         }
-        Launcher.Instance.RecalculateReady(rc);
+
+        Launcher.Instance.DisplayReadyCount(rc);
     }
-
-    // called after switching to new master client
-    // public override void OnMasterClientSwitched(Player newMasterClient) {
-        // Debug.Log("Switch Master");
-        // Player[] existingP = PhotonNetwork.PlayerList;
-        // for (int i = 0; i < existingP.Length; i++) {
-        //     string pm, pc, pr, pt;
-        //     pm = (string)existingP[i].CustomProperties[PlayerProperties.PM];
-        //     pc = (string)existingP[i].CustomProperties[PlayerProperties.PC];
-        //     pr = (string)existingP[i].CustomProperties[PlayerProperties.PR];
-        //     pt = (string)existingP[i].CustomProperties[PlayerProperties.PT];
-
-        //     // if ((string)existingP[i].CustomProperties[PlayerProperties.PM] == "False") {
-
-        //     // } else {
-
-        //     // }
-        // }
-    // }
 
     // called everytime players custom properties changed
     public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps) {
@@ -87,7 +68,20 @@ public class PlayerListItem : MonoBehaviourPunCallbacks
                     roomMasterIcon.SetActive(true);
                 }
             }
-            // specific change of properties
+
+            // specific change when master client change
+            if (changedProps.Count == 2) {
+                // check if the first players is on ready mode
+                if ((string)player.CustomProperties[PlayerProperties.PR] == "False") {
+                    roomReadyIcon.SetActive(false);
+                }
+                // check if the player is the master client
+                if ((string)player.CustomProperties[PlayerProperties.PM] == "Yes") {
+                    roomMasterIcon.SetActive(true);
+                }
+            }
+
+            // specific change of properties when player activate/deactivate ready button and char class
             if (changedProps.Count == 1) {
                 // updating player character class property
                 if (changedProps.ContainsKey(PlayerProperties.PC)) {
@@ -159,7 +153,8 @@ public class PlayerListItem : MonoBehaviourPunCallbacks
         player.SetCustomProperties(defaultProp);
     }
 
-    public override void OnMasterClientSwitched(Player newMasterClient) {
-        
+    /// <summary> Get custom player properties </summary>
+    public void GetPlayerCustomProp() {
+
     }
 }
