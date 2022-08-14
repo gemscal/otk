@@ -7,6 +7,7 @@ using Photon.Realtime;
 public class RoomListItem : MonoBehaviour
 {
     [SerializeField] TMP_Text roomName;
+    [SerializeField] TMP_Text playerCount;
     [SerializeField] GameObject map;
     [SerializeField] GameObject gameMode;
     [SerializeField] GameObject privateRoom;
@@ -22,6 +23,12 @@ public class RoomListItem : MonoBehaviour
         if (isPublic) {
             privateRoom.SetActive(false);
         }
+
+        // get player count
+        string gpc = roomInfo.Name;
+        gpc = gpc.Remove(0, 15);
+        gpc = gpc.Remove(1);
+        playerCount.text = gpc;
         
         // TODO: Game mode section
 
