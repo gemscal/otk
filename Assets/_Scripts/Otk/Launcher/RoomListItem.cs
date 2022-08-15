@@ -34,7 +34,7 @@ public class RoomListItem : MonoBehaviour
 
         // TODO: Map section
 
-        // removing the custom room propertiest on the name
+        // removing the custom room properties on the name
         string roomNameDisplay = roomInfo.Name;
         roomNameDisplay = roomNameDisplay.Remove(0, 17);
         roomName.text = roomNameDisplay;
