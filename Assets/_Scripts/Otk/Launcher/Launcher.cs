@@ -283,7 +283,11 @@ public class Launcher : MonoBehaviourPunCallbacks
 
     /// <summary> Start game </summary>
     public void StartGame() {
-        PhotonNetwork.LoadLevel(1);
+        if (readyCount != PhotonNetwork.CurrentRoom.MaxPlayers) {
+            Debug.Log("not equal");
+        } else {
+            PhotonNetwork.LoadLevel(1);
+        }
     }
 
     /// <summary> Handles ready function in room </summary>
