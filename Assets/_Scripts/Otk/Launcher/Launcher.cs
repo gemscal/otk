@@ -281,15 +281,6 @@ public class Launcher : MonoBehaviourPunCallbacks
         MenuManager.Instance.OpenMenu("failed");
     }
 
-    /// <summary> Start game </summary>
-    public void StartGame() {
-        if (readyCount != PhotonNetwork.CurrentRoom.MaxPlayers) {
-            Debug.Log("not equal");
-        } else {
-            PhotonNetwork.LoadLevel(1);
-        }
-    }
-
     /// <summary> Handles ready function in room </summary>
     public void Ready() {
         string isReadyVal;
@@ -306,6 +297,15 @@ public class Launcher : MonoBehaviourPunCallbacks
         }
 
         DisplayReadyCount(readyCount);
+    }
+    
+    /// <summary> Start game </summary>
+    public void StartGame() {
+        if (readyCount != PhotonNetwork.CurrentRoom.MaxPlayers) {
+            Debug.Log("not equal");
+        } else {
+            PhotonNetwork.LoadLevel(1);
+        }
     }
 
     /// <summary> Handles ready function in room </summary>
