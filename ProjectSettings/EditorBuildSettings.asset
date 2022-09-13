@@ -6,9 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/Otk/LandingScene.unity
+    path: Assets/_Scenes/Otk/LandingScene.unity
     guid: d4af511dfcf12ca42806015344cc74d6
   - enabled: 1
-    path: Assets/Scenes/Otk/GameScene.unity
+    path: Assets/_Scenes/Otk/TrainingMap.unity
     guid: 19e5767adb806b743809627fe4f76397
   m_configObjects: {}
