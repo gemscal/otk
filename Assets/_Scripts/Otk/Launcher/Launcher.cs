@@ -200,7 +200,7 @@ public class Launcher : MonoBehaviourPunCallbacks
     }
 
     // prep function for creating room
-    public void PrepCreateRoom() {
+    public void PrepCreateRoom() { 
         if (string.IsNullOrEmpty(roomNameInputField.text)) {
             return;
         }
