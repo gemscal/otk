@@ -167,7 +167,7 @@ public class Launcher : MonoBehaviourPunCallbacks
             numOfPlayers -= 1;
             numberOfPlayers.text = numOfPlayers.ToString();
         }
-    } 
+    }
 
     public void NumberOfPlayerInc() {
         int numOfPlayers = Int32.Parse(numberOfPlayers.text);
