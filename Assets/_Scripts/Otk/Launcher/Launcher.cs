@@ -317,7 +317,6 @@ public class Launcher : MonoBehaviourPunCallbacks
     /// <summary> Will display the number of players who is ready </summary>
     public void DisplayReadyCount(int rCount) {
         readyCount = rCount;
-        Debug.Log("Display" + readyCount);
         roomReadyCount.text = $"{rCount} / {roomNumberOfPlayer.text}";
     }
 
